@@ -1,0 +1,301 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Quartzite Varieties — Oranta Ventures</title>
+
+    <style>
+        :root {
+            --bg: #ffffff;
+            --muted: #666;
+            --card-shadow: 0 6px 18px rgba(10, 10, 10, 0.06);
+            --max-width: 1100px;
+        }
+
+        * { box-sizing: border-box }
+
+        body {
+            font-family: Inter, system-ui, Arial, sans-serif;
+            margin: 0;
+            background: var(--bg);
+            color: #222;
+            padding: 30px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .container {
+            width: 100%;
+            max-width: var(--max-width);
+        }
+
+        header {
+            background: #111;
+            color: #fff;
+            padding: 8px 16px;
+            border-radius: 10px;
+            text-align: center;
+            margin-bottom: 24px;
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 22px;
+        }
+
+        /* Grid */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 18px;
+        }
+
+        .card {
+            background: #fff;
+            border-radius: 10px;
+            overflow: hidden;
+            cursor: pointer;
+            box-shadow: var(--card-shadow);
+            transition: transform .22s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-4px);
+        }
+
+        .thumb {
+            width: 100%;
+            aspect-ratio: 1 / 1;
+            object-fit: cover;
+            display: block;
+            transition: transform .3s ease;
+        }
+
+        .card:hover .thumb {
+            transform: scale(1.05);
+        }
+
+        .card-body {
+            padding: 12px;
+            text-align: center;
+        }
+
+        .product-name {
+            font-weight: 600;
+            font-size: 15.5px;
+        }
+
+        /* Modal */
+        .modal {
+            position: fixed;
+            inset: 0;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            background: rgba(0,0,0,.55);
+            z-index: 999;
+            padding: 20px;
+        }
+
+        .modal.show { display: flex }
+
+        .modal-card {
+            background: #fff;
+            width: 100%;
+            max-width: 900px;
+            border-radius: 12px;
+            overflow: hidden;
+            display: grid;
+            grid-template-columns: 1fr 380px;
+            max-height: 90vh;
+        }
+
+        .modal-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .modal-details {
+            padding: 18px;
+            overflow-y: auto;
+        }
+
+        .modal-details h2 {
+            margin-top: 0;
+        }
+
+        .specs {
+            font-size: 15px;
+            color: var(--muted);
+            margin-bottom: 8px;
+        }
+
+        .spec-title {
+            font-weight: 700;
+            color: #222;
+        }
+
+        .close-btn {
+            margin-top: 10px;
+            background: #111;
+            color: #fff;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        @media(max-width:880px) {
+            .modal-card {
+                grid-template-columns: 1fr;
+            }
+            .modal-image {
+                max-height: 40vh;
+            }
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 18px;
+            color: var(--muted);
+            font-size: 14px;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+    <header>
+        <h1>Quartzite Varieties</h1>
+    </header>
+
+    <main>
+        <div id="grid" class="grid"></div>
+    </main>
+
+    <footer>© 2025 Oranta Ventures Pvt Ltd • All Rights Reserved</footer>
+</div>
+
+<!-- Modal -->
+<div id="modal" class="modal">
+    <div class="modal-card">
+        <img id="modalImg" class="modal-image" src="" alt="">
+        <div class="modal-details">
+            <h2 id="modalTitle"></h2>
+            <p class="specs"><span class="spec-title">Origin:</span> <span id="specOrigin"></span></p>
+            <p class="specs"><span class="spec-title">Appearance:</span> <span id="specAppearance"></span></p>
+            <p class="specs"><span class="spec-title">Finishes:</span> <span id="specFinishes"></span></p>
+            <p class="specs"><span class="spec-title">Thickness:</span> <span id="specThickness"></span></p>
+            <p class="specs"><span class="spec-title">Properties:</span> <span id="specProperties"></span></p>
+
+            <button class="close-btn" onclick="closeModal()">Close</button>
+        </div>
+    </div>
+</div>
+
+<script>
+const quartziteData = [
+    {
+        name: "Taj Mahal Quartzite",
+        image: "images/quatz.taj mahal.jpeg",
+        origin: "Brazil",
+        appearance: "Creamy white with soft golden veins",
+        finishes: "Polished, Honed",
+        thickness: "18mm, 20mm",
+        properties: "Marble look with granite strength"
+    },
+    {
+        name: "White Macaubas",
+        image: "images/Quartzite.white macaubas.jpeg",
+        origin: "Brazil",
+        appearance: "White background with linear grey veins",
+        finishes: "Polished",
+        thickness: "18mm",
+        properties: "Elegant and modern"
+    },
+    {
+        name: "Azul Macaubas",
+        image: "images/quatz.azul macaubas.jpeg",
+        origin: "Brazil",
+        appearance: "White with blue-grey linear patterns",
+        finishes: "Polished",
+        thickness: "18mm",
+        properties: "Premium decorative quartzite"
+    },
+    {
+        name: "Silver Shine",
+        image: "images/Quartzite.silver shine.jpeg",
+        origin: "India",
+        appearance: "Silver-grey flowing texture",
+        finishes: "Polished",
+        thickness: "18mm",
+        properties: "Durable & reflective"
+    },
+    {
+        name: "Copper Quartzite",
+        image: "images/quatz.copper.jpeg",
+        origin: "Brazil",
+        appearance: "Copper and brown natural waves",
+        finishes: "Polished",
+        thickness: "18mm",
+        properties: "Bold statement stone"
+    },
+    {
+        name: "Himachal White",
+        image: "images/Quartzite.himachal white.jpeg",
+        origin: "India",
+        appearance: "Soft white with subtle texture",
+        finishes: "Polished",
+        thickness: "18mm",
+        properties: "Clean & bright appearance"
+    },
+    {
+        name: "Himachal Green",
+        image: "images/quatz.himachal green .jpeg",
+        origin: "India",
+        appearance: "Green tones with mineral flow",
+        finishes: "Polished",
+        thickness: "18mm",
+        properties: "Unique natural pattern"
+    }
+];
+
+const grid = document.getElementById("grid");
+const modal = document.getElementById("modal");
+
+quartziteData.forEach((item, index) => {
+    const card = document.createElement("div");
+    card.className = "card";
+    card.innerHTML = `
+        <img class="thumb" src="${item.image}" alt="${item.name}">
+        <div class="card-body">
+            <div class="product-name">${item.name}</div>
+        </div>
+    `;
+    card.onclick = () => openModal(index);
+    grid.appendChild(card);
+});
+
+function openModal(i) {
+    const d = quartziteData[i];
+    modal.classList.add("show");
+    modalImg.src = d.image;
+    modalTitle.textContent = d.name;
+    specOrigin.textContent = d.origin;
+    specAppearance.textContent = d.appearance;
+    specFinishes.textContent = d.finishes;
+    specThickness.textContent = d.thickness;
+    specProperties.textContent = d.properties;
+}
+
+function closeModal() {
+    modal.classList.remove("show");
+}
+</script>
+
+</body>
+</html>

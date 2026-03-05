@@ -1,0 +1,289 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Travertine Collection — Oranta Ventures</title>
+
+    <style>
+        :root {
+            --bg: #ffffff;
+            --muted: #666;
+            --card-shadow: 0 6px 18px rgba(10, 10, 10, .06);
+            --max-width: 1100px;
+        }
+
+        * {
+            box-sizing: border-box
+        }
+
+        body {
+            margin: 0;
+            padding: 30px;
+            font-family: Inter, system-ui, Arial, sans-serif;
+            background: var(--bg);
+            color: #222;
+            display: flex;
+            justify-content: center;
+        }
+
+        .container {
+            width: 100%;
+            max-width: var(--max-width)
+        }
+
+        header {
+            background: #111;
+            color: #fff;
+            padding: 6px;
+            border-radius: 10px;
+            text-align: center;
+            margin-bottom: 24px;
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 22px
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 18px;
+        }
+
+        .card {
+            background: #fff;
+            border-radius: 10px;
+            overflow: hidden;
+            cursor: pointer;
+            box-shadow: var(--card-shadow);
+            transition: .25s;
+        }
+
+        .card:hover {
+            transform: translateY(-3px)
+        }
+
+        .thumb {
+            width: 100%;
+            aspect-ratio: 1/1;
+            object-fit: cover;
+        }
+
+        .card-body {
+            padding: 12px;
+            text-align: center;
+        }
+
+        .product-name {
+            font-weight: 600;
+            font-size: 15.5px;
+        }
+
+        /* Modal */
+        .modal {
+            position: fixed;
+            inset: 0;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            background: rgba(0, 0, 0, .5);
+            z-index: 999;
+            padding: 20px;
+        }
+
+        .modal.show {
+            display: flex
+        }
+
+        .modal-card {
+            background: #fff;
+            border-radius: 12px;
+            max-width: 900px;
+            width: 100%;
+            display: grid;
+            grid-template-columns: 1fr 380px;
+            overflow: hidden;
+        }
+
+        .modal-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .modal-details {
+            padding: 18px;
+            overflow: auto;
+        }
+
+        .modal-details h2 {
+            margin-top: 0
+        }
+
+        .specs {
+            font-size: 15px;
+            color: var(--muted);
+            margin-bottom: 8px;
+        }
+
+        .spec-title {
+            font-weight: 700;
+            color: #222;
+        }
+
+        .close-btn {
+            background: #111;
+            color: #fff;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        @media(max-width:850px) {
+            .modal-card {
+                grid-template-columns: 1fr
+            }
+
+            .modal-image {
+                max-height: 40vh
+            }
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 18px;
+            color: var(--muted);
+            font-size: 14px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+
+        <header>
+            <h1>Travertine Varieties</h1>
+        </header>
+
+        <div id="grid" class="grid"></div>
+
+        <footer>© 2025 Oranta Ventures Pvt Ltd • All Rights Reserved</footer>
+
+    </div>
+
+    <!-- Modal -->
+    <div id="modal" class="modal">
+        <div class="modal-card">
+            <img id="modalImg" class="modal-image">
+            <div class="modal-details">
+                <h2 id="modalTitle"></h2>
+                <p class="specs"><span class="spec-title">Origin:</span> <span id="origin"></span></p>
+                <p class="specs"><span class="spec-title">Appearance:</span> <span id="appearance"></span></p>
+                <p class="specs"><span class="spec-title">Finishes:</span> <span id="finishes"></span></p>
+                <p class="specs"><span class="spec-title">Thickness:</span> <span id="thickness"></span></p>
+                <p class="specs"><span class="spec-title">Properties:</span> <span id="properties"></span></p>
+                <button class="close-btn" onclick="closeModal()">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const travertineData = [
+            {
+                name: "Silver Travertine",
+                image: "images/travertine.silver.jpeg",
+                origin: "Turkey",
+                appearance: "Cool silver-grey tones with natural linear veins",
+                finishes: "Polished, Honed, Brushed",
+                thickness: "18mm, 20mm",
+                properties: "Elegant, durable, ideal for flooring & walls"
+            },
+            {
+                name: "Classic Beige Travertine",
+                image: "images/travertine.classicbeige.jpeg",
+                origin: "Turkey",
+                appearance: "Warm beige background with subtle pores",
+                finishes: "Honed, Tumbled, Polished",
+                thickness: "18mm",
+                properties: "Timeless look, versatile for interiors"
+            },
+            {
+                name: "Noce Travertine",
+                image: "images/travertine.neco.jpeg",
+                origin: "Turkey",
+                appearance: "Rich walnut-brown color with layered patterns",
+                finishes: "Honed, Polished",
+                thickness: "18mm, 20mm",
+                properties: "Luxurious, strong, suitable for premium spaces"
+            },
+            {
+                name: "Gold Travertine",
+                image: "images/travertine.gold.jpeg",
+                origin: "Iran",
+                appearance: "Golden yellow base with dramatic veining",
+                finishes: "Polished, Honed",
+                thickness: "18mm",
+                properties: "Decorative, eye-catching, elegant stone"
+            },
+            {
+                name: "Red Travertine",
+                image: "images/travertine..red.jpeg",
+                origin: "Iran",
+                appearance: "Deep red tones with white streaks",
+                finishes: "Polished, Honed",
+                thickness: "18mm",
+                properties: "Bold color, statement stone"
+            },
+            {
+                name: "Titanium Travertine",
+                image: "images/travertine.titanium.jpeg",
+                origin: "Turkey",
+                appearance: "Dark grey to charcoal with linear movement",
+                finishes: "Polished, Honed, Brushed",
+                thickness: "18mm, 20mm",
+                properties: "Modern look, high durability"
+            }
+        ];
+
+        const grid = document.getElementById("grid");
+        const modal = document.getElementById("modal");
+
+        travertineData.forEach((item, i) => {
+            const card = document.createElement("div");
+            card.className = "card";
+            card.innerHTML = `
+        <img class="thumb" src="${item.image}" alt="${item.name}">
+        <div class="card-body">
+            <div class="product-name">${item.name}</div>
+        </div>`;
+            card.onclick = () => openModal(i);
+            grid.appendChild(card);
+        });
+
+        function openModal(i) {
+            const d = travertineData[i];
+            document.getElementById("modalImg").src = d.image;
+            document.getElementById("modalTitle").innerText = d.name;
+            document.getElementById("origin").innerText = d.origin;
+            document.getElementById("appearance").innerText = d.appearance;
+            document.getElementById("finishes").innerText = d.finishes;
+            document.getElementById("thickness").innerText = d.thickness;
+            document.getElementById("properties").innerText = d.properties;
+            modal.classList.add("show");
+        }
+
+        function closeModal() {
+            modal.classList.remove("show");
+        }
+
+        modal.onclick = e => { if (e.target === modal) closeModal(); }
+    </script>
+
+</body>
+
+</html>

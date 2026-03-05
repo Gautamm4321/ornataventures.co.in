@@ -1,0 +1,336 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Limestone Varieties — Oranta Ventures</title>
+
+    <style>
+        :root {
+            --bg: #ffffff;
+            --muted: #666;
+            --accent: #e1c548;
+            --card-shadow: 0 6px 18px rgba(10, 10, 10, .06);
+            --max-width: 1100px;
+        }
+
+        * {
+            box-sizing: border-box
+        }
+
+        body {
+            font-family: Inter, system-ui, Arial, sans-serif;
+            margin: 0;
+            background: var(--bg);
+            color: #222;
+            padding: 30px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .container {
+            width: 100%;
+            max-width: var(--max-width)
+        }
+
+        header {
+            background: #111;
+            color: #fff;
+            padding: 8px 12px;
+            border-radius: 10px;
+            text-align: center;
+            margin-bottom: 24px;
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 22px
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 18px;
+        }
+
+        .card {
+            background: #fff;
+            border-radius: 10px;
+            overflow: hidden;
+            cursor: pointer;
+            box-shadow: var(--card-shadow);
+            transition: .25s;
+        }
+
+        .card:hover {
+            transform: translateY(-3px)
+        }
+
+        .thumb {
+            width: 100%;
+            aspect-ratio: 1/1;
+            object-fit: cover;
+        }
+
+        .card-body {
+            padding: 12px;
+            text-align: center;
+        }
+
+        .product-name {
+            font-weight: 600;
+            font-size: 15.5px;
+        }
+
+        /* Pagination */
+        .pagination {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin: 16px 0;
+        }
+
+        .pg-btn {
+            background: #111;
+            color: #fff;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        .pg-btn[disabled] {
+            opacity: .45;
+            cursor: not-allowed
+        }
+
+        /* Modal */
+        .modal {
+            position: fixed;
+            inset: 0;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            background: rgba(0, 0, 0, .5);
+            z-index: 999;
+            padding: 20px;
+        }
+
+        .modal.show {
+            display: flex
+        }
+
+        .modal-card {
+            background: #fff;
+            max-width: 900px;
+            width: 100%;
+            border-radius: 12px;
+            overflow: hidden;
+            display: grid;
+            grid-template-columns: 1fr 380px;
+        }
+
+        .modal-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .modal-details {
+            padding: 18px;
+            overflow: auto;
+        }
+
+        .modal-details h2 {
+            margin-top: 0
+        }
+
+        .specs {
+            color: var(--muted);
+            font-size: 15px;
+            margin-bottom: 8px
+        }
+
+        .spec-title {
+            font-weight: 700;
+            color: #222
+        }
+
+        .close-btn {
+            background: #111;
+            color: #fff;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        @media(max-width:880px) {
+            .modal-card {
+                grid-template-columns: 1fr
+            }
+
+            .modal-image {
+                max-height: 40vh
+            }
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 18px;
+            color: var(--muted);
+            font-size: 14px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+
+        <header>
+            <h1>Limestone Varieties</h1>
+        </header>
+
+        <main>
+            <div id="grid" class="grid"></div>
+
+            <div class="pagination">
+                <button class="pg-btn" id="prevBtn">Next</button>
+                <button class="pg-btn" id="nextBtn">Previous</button>
+            </div>
+        </main>
+
+        <footer>© 2025 Oranta Ventures Pvt Ltd • All Rights Reserved</footer>
+
+    </div>
+
+    <!-- Modal -->
+    <div id="modal" class="modal">
+        <div class="modal-card">
+            <img id="modalImg" class="modal-image">
+            <div class="modal-details">
+                <h2 id="modalTitle"></h2>
+                <p class="specs"><span class="spec-title">Origin:</span> <span id="specOrigin"></span></p>
+                <p class="specs"><span class="spec-title">Appearance:</span> <span id="specAppearance"></span></p>
+                <p class="specs"><span class="spec-title">Finishes:</span> <span id="specFinishes"></span></p>
+                <p class="specs"><span class="spec-title">Thickness:</span> <span id="specThickness"></span></p>
+                <p class="specs"><span class="spec-title">Properties:</span> <span id="specProperties"></span></p>
+                <button class="close-btn" id="closeModal">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const limestoneData = [
+            {
+                name: "Kota Blue",
+                image: "images/limestone.kotablue.jpeg",
+                origin: "Rajasthan, India",
+                appearance: "Blue-grey tone with natural matt texture",
+                finishes: "Natural, Honed, Polished",
+                thickness: "18mm, 20mm",
+                properties: "Slip-resistant, durable, cost-effective"
+            },
+            {
+                name: "Kota Brown",
+                image: "images/limestone.kotabrown.jpeg",
+                origin: "Rajasthan, India",
+                appearance: "Warm brown shade with uniform texture",
+                finishes: "Natural, Honed",
+                thickness: "18mm, 20mm",
+                properties: "Strong, low maintenance, popular for flooring"
+            },
+            {
+                name: "Tandur Blue",
+                image: "images/LIMESTONE.TANDUR BLUE.jpeg",
+                origin: "Telangana, India",
+                appearance: "Blue-grey stone with subtle fossil patterns",
+                finishes: "Natural, Polished",
+                thickness: "18mm",
+                properties: "Weather-resistant, suitable for outdoors"
+            },
+            {
+                name: "Tandur Yellow",
+                image: "images/limestone.tandur yelloww.jpeg",
+                origin: "Telangana, India",
+                appearance: "Soft yellow to beige tone with fossils",
+                finishes: "Natural, Polished",
+                thickness: "18mm",
+                properties: "Bright appearance, durable for paving"
+            },
+            {
+                name: "Kadappa Black",
+                image: "images/limestone.kadappablack.jpeg",
+                origin: "Andhra Pradesh, India",
+                appearance: "Deep black with smooth natural surface",
+                finishes: "Natural, Polished",
+                thickness: "18mm, 20mm",
+                properties: "High density, strong, widely used in flooring"
+            },
+            {
+                name: "Jaisalmer Yellow",
+                image: "images/limestone.jaisalmer yellow.jpeg",
+                origin: "Rajasthan, India",
+                appearance: "Golden yellow with fossilized patterns",
+                finishes: "Polished, Honed, Sandblasted",
+                thickness: "18mm",
+                properties: "Elegant, decorative, good for cladding"
+            }
+        ];
+
+        const perPage = 25;
+        let currentPage = 1;
+        const totalPages = Math.ceil(limestoneData.length / perPage);
+
+        const gridEl = document.getElementById("grid");
+        const modal = document.getElementById("modal");
+        const prevBtn = document.getElementById("prevBtn");
+        const nextBtn = document.getElementById("nextBtn");
+
+        function renderPage(page = 1) {
+            gridEl.innerHTML = "";
+            const start = (page - 1) * perPage;
+            limestoneData.slice(start, start + perPage).forEach((item, i) => {
+                const card = document.createElement("div");
+                card.className = "card";
+                card.innerHTML = `
+            <img class="thumb" src="${item.image}">
+            <div class="card-body"><div class="product-name">${item.name}</div></div>
+        `;
+                card.onclick = () => openModal(start + i);
+                gridEl.appendChild(card);
+            });
+            prevBtn.disabled = page <= 1;
+            nextBtn.disabled = page >= totalPages;
+        }
+
+        function openModal(i) {
+            const d = limestoneData[i];
+            document.getElementById("modalImg").src = d.image;
+            document.getElementById("modalTitle").innerText = d.name;
+            document.getElementById("specOrigin").innerText = d.origin;
+            document.getElementById("specAppearance").innerText = d.appearance;
+            document.getElementById("specFinishes").innerText = d.finishes;
+            document.getElementById("specThickness").innerText = d.thickness;
+            document.getElementById("specProperties").innerText = d.properties;
+            modal.classList.add("show");
+        }
+
+        function closeModal() {
+            modal.classList.remove("show");
+        }
+
+        prevBtn.onclick = () => { if (currentPage > 1) { currentPage--; renderPage(currentPage) } }
+        nextBtn.onclick = () => { if (currentPage < totalPages) { currentPage++; renderPage(currentPage) } }
+
+        document.getElementById("closeModal").onclick = closeModal;
+        modal.onclick = e => { if (e.target === modal) closeModal(); }
+
+        renderPage(currentPage);
+    </script>
+
+</body>
+
+</html>

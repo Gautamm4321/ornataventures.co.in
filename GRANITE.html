@@ -1,0 +1,176 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Granite Varieties — Oranta Ventures</title>
+
+<style>
+*{box-sizing:border-box}
+body{margin:0;padding:20px;font-family:system-ui,Arial,sans-serif;background:#fff;color:#222}
+.container{max-width:1200px;margin:auto}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:18px}
+.card{background:#fff;border-radius:12px;overflow:hidden;box-shadow:0 6px 18px rgba(0,0,0,.1);cursor:pointer;transition:.25s}
+.card:hover{transform:translateY(-6px)}
+.thumb{width:100%;aspect-ratio:1/1;object-fit:cover;display:block}
+.card-body{text-align:center;padding:10px;font-weight:600}
+
+header{
+  background:#111;
+  color:#fff;
+  padding:10px 0;
+  text-align:center;
+  margin-bottom:24px;
+  border-radius:6px;
+}
+
+header h1{
+  margin:0;
+  font-size:20px;
+  font-weight:600;
+  letter-spacing:0.5px;
+}
+
+
+/* modal */
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.55);display:none;align-items:center;justify-content:center;padding:20px;z-index:999}
+.modal.show{display:flex}
+.modal-card{background:#fff;width:100%;max-width:900px;border-radius:12px;overflow:hidden;display:grid;grid-template-columns:1fr 360px}
+.modal-image{width:100%;height:100%;object-fit:cover}
+.modal-details{padding:16px;overflow:auto}
+.close-btn{margin-top:10px;background:#111;color:#fff;border:none;padding:8px 12px;border-radius:8px;cursor:pointer}
+@media(max-width:850px){.modal-card{grid-template-columns:1fr}.modal-image{max-height:40vh}}
+</style>
+</head>
+
+<body>
+<div class="container">
+<header><h1>Granite Varieties</h1></header>
+<div id="grid" class="grid"></div>
+</div>
+
+<!-- MODAL -->
+<div id="modal" class="modal">
+  <div class="modal-card">
+    <img id="modalImg" class="modal-image">
+    <div class="modal-details">
+      <h2 id="modalTitle"></h2>
+      <p><b>Origin:</b> <span id="specOrigin"></span></p>
+      <p><b>Appearance:</b> <span id="specAppearance"></span></p>
+      <p><b>Finishes:</b> <span id="specFinishes"></span></p>
+      <p><b>Thickness:</b> <span id="specThickness"></span></p>
+      <p><b>Properties:</b> <span id="specProperties"></span></p>
+      <button class="close-btn" id="closeModal">Close</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* =========================
+   ALL 58 GRANITE VARIETIES
+   (SYNTAX FIXED)
+========================= */
+ 
+const graniteData = [
+
+/* 1–10 */
+{ name:"Baltic Brown", image:"images/granite.batlicbrown.jpeg", origin:"Finland", appearance:"Large brown circular crystals", finishes:"Polished", thickness:"18mm, 20mm", properties:"Very hard, durable, ideal for countertops" },
+{ name:"Blue Persa", image:"images/granite.bluepersa.jpeg", origin:"Iran", appearance:"Blue-grey crystalline pattern", finishes:"Polished", thickness:"18mm", properties:"Dense granite, scratch resistant" },
+{ name:"Brown Pearl", image:"images/granite.brownpearl.jpeg", origin:"India", appearance:"Brown with pearl shimmer", finishes:"Polished", thickness:"18mm", properties:"Elegant look, low water absorption" },
+{ name:"Himalayan Blue", image:"images/GRANITE.himalayanblue99.jpeg", origin:"India", appearance:"Blue flowing mineral waves", finishes:"Polished", thickness:"18mm", properties:"Strong stone, suitable for flooring & walls" },
+{ name:"Colombo Juparana", image:"images/granite.colombojuparana.jpeg", origin:"India", appearance:"Beige wavy pattern", finishes:"Polished", thickness:"18mm", properties:"Classic appearance, good durability" },
+{ name:"Zimbabwe Black", image:"images/granite.zimbabweblack.jpeg", origin:"Zimbabwe", appearance:"Solid jet black", finishes:"Polished, Honed", thickness:"18mm, 20mm", properties:"Extremely hard, premium export quality" },
+{ name:"Emerald Pearl", image:"images/granite.emearld.pearl.jpeg", origin:"Norway", appearance:"Green-black shimmering crystals", finishes:"Polished", thickness:"18mm", properties:"Luxurious finish, high strength" },
+{ name:"Honey Blue", image:"images/granite.honeyblue.jpeg", origin:"India", appearance:"Blue with honey-gold tones", finishes:"Polished", thickness:"18mm", properties:"Decorative granite, durable surface" },
+{ name:"Sivakasi Ivory Brown", image:"images/granite.sivakasiivorybrown.jpeg", origin:"India", appearance:"Ivory base with brown grains", finishes:"Polished", thickness:"18mm", properties:"Good strength, popular for interiors" },
+{ name:"Imperial Gold", image:"images/granite.imperialgold.jpeg", origin:"India", appearance:"Golden veins and patterns", finishes:"Polished", thickness:"18mm", properties:"Premium decorative granite" },
+
+/* 11–20 */
+{ name:"Raw Silk Pink", image:"images/granite.rawsilkpink.jpeg", origin:"India", appearance:"Soft pink silky texture", finishes:"Polished", thickness:"18mm", properties:"Smooth finish, elegant appearance" },
+{ name:"Kashmir Gold", image:"images/granite.kashmirgold.jpeg", origin:"India", appearance:"Golden beige flowing veins", finishes:"Polished", thickness:"18mm", properties:"Durable, suitable for flooring" },
+{ name:"Bianco Antique", image:"images/granite.biancoantique.jpeg", origin:"Brazil", appearance:"White-grey antique texture", finishes:"Polished", thickness:"18mm", properties:"Strong stone, modern look" },
+{ name:"Champagne", image:"images/granite.champagneee.jpeg", origin:"Brazil", appearance:"Cream with subtle shimmer", finishes:"Polished", thickness:"18mm", properties:"Elegant surface, stain resistant" },
+{ name:"Monte Cristo", image:"images/granite.montycristo.jpeg", origin:"Brazil", appearance:"Grey mineral movement", finishes:"Polished", thickness:"18mm", properties:"Contemporary design, durable" },
+{ name:"Viscount White", image:"images/granite.viscountwhite.jpeg", origin:"India", appearance:"White with bold grey waves", finishes:"Polished", thickness:"18mm", properties:"Highly popular, long-lasting" },
+{ name:"Black Marinace", image:"images/granite.blackmarinace.jpeg", origin:"Brazil", appearance:"Black base with stone pebbles", finishes:"Polished", thickness:"18mm", properties:"Statement stone, decorative" },
+{ name:"Impala Black", image:"images/granite.impalablack.jpeg", origin:"South Africa", appearance:"Dark grey-black uniform grain", finishes:"Polished", thickness:"18mm", properties:"Industrial look, high durability" },
+{ name:"India Jet Black", image:"images/granite.indianjetblack.jpeg", origin:"India", appearance:"Pure deep black", finishes:"Polished", thickness:"18mm, 20mm", properties:"High density, premium quality" },
+{ name:"Madhura Gold", image:"images/granite.madhuragold.jpeg", origin:"India", appearance:"Golden yellow with red waves", finishes:"Polished", thickness:"18mm", properties:"Bold color, decorative granite" },
+
+/* 21–30 */
+{ name:"Multicolor Red", image:"images/granite.multicolorred.jpeg", origin:"India", appearance:"Red with multicolor swirls", finishes:"Polished", thickness:"18mm", properties:"Very strong, suitable for outdoors" },
+{ name:"Paradiso Classico", image:"images/granite.paradisoclassico.jpeg", origin:"India", appearance:"Purple-grey flowing pattern", finishes:"Polished", thickness:"18mm", properties:"Artistic look, durable stone" },
+{ name:"Blue Paradiso", image:"images/granite.blueparadiso.jpeg", origin:"India", appearance:"Blue-grey curved waves", finishes:"Polished", thickness:"18mm", properties:"Stylish appearance, long-lasting" },
+{ name:"Indian Juparana", image:"images/granite.indianjuparana.jpeg", origin:"India", appearance:"Cream with linear waves", finishes:"Polished", thickness:"18mm", properties:"Classic granite, widely used" },
+{ name:"Impala Indian", image:"images/granite.impalaindian.jpeg", origin:"India", appearance:"Dark uniform crystalline texture", finishes:"Polished", thickness:"18mm", properties:"Minimal look, strong material" },
+{ name:"Ivory Brown", image:"images/granite.ivorybrown.jpeg", origin:"India", appearance:"Ivory base with brown grains", finishes:"Polished", thickness:"18mm", properties:"Warm tone, interior friendly" },
+{ name:"Ivory White", image:"images/granite.ivory white.jpeg", origin:"India", appearance:"Soft ivory white tone", finishes:"Polished", thickness:"18mm", properties:"Clean look, smooth finish" },
+{ name:"Ivory Gold", image:"images/granite.ivorygold.jpeg", origin:"India", appearance:"Ivory with golden veins", finishes:"Polished", thickness:"18mm", properties:"Premium finish, decorative" },
+{ name:"Lemon Spice", image:"images/granite.lemon spice.jpeg", origin:"India", appearance:"Yellow with brown specks", finishes:"Polished", thickness:"18mm", properties:"Bright color, stain resistant" },
+{ name:"Golden Beach", image:"images/granite.goldenbeach.jpeg", origin:"India", appearance:"Golden flowing sandy pattern", finishes:"Polished", thickness:"18mm", properties:"Elegant flooring granite" },
+
+/* 31–40 */
+{ name:"Sapphire Blue", image:"images/granite.sapphireblue.jpeg", origin:"India", appearance:"Deep blue mineral grains", finishes:"Polished", thickness:"18mm", properties:"Luxurious tone, strong stone" },
+{ name:"Coral Brown", image:"images/granite.carol brown.jpeg", origin:"India", appearance:"Brown coral texture", finishes:"Polished", thickness:"18mm", properties:"Durable, natural texture" },
+{ name:"Coral Gold", image:"images/granite.carol gold.jpeg", origin:"India", appearance:"Golden coral pattern", finishes:"Polished", thickness:"18mm", properties:"Decorative granite, long life" },
+{ name:"Black Galaxy", image:"images/blackgalaxy.granite.jpg.jpg", origin:"India", appearance:"Black with golden specks", finishes:"Polished", thickness:"18mm, 20mm", properties:"Highly durable, glossy finish" },
+{ name:"Absolute Black", image:"images/absoluteb.granite.jpg.jpg", origin:"India", appearance:"Solid jet black", finishes:"Polished, Honed", thickness:"18mm, 20mm", properties:"Scratch resistant, premium granite" },
+{ name:"Premium Black", image:"images/premiumb.granite.jpg.jpg", origin:"India", appearance:"Deep uniform black", finishes:"Polished", thickness:"18mm", properties:"Strong, widely used granite" },
+{ name:"Brown Pearl", image:"images/granite.brownpearl.jpeg", origin:"India", appearance:"Black with silver crystals", finishes:"Polished", thickness:"18mm", properties:"Elegant reflective surface" },
+{ name:"Tan Brown", image:"images/tanbrown.granite.jpg.jpg", origin:"India", appearance:"Brown with black crystals", finishes:"Polished", thickness:"18mm", properties:"Popular for flooring & slabs" },
+{ name:"Coffee Brown", image:"images/coffeebrown.granite.jpg.jpg", origin:"India", appearance:"Dark coffee tone", finishes:"Polished", thickness:"18mm", properties:"Strong, warm appearance" },
+{ name:"Desert Brown", image:"images/desertbrown.granite.jpg.jpg", origin:"India", appearance:"Brown flowing pattern", finishes:"Polished", thickness:"18mm", properties:"Good for indoor & outdoor use" },
+
+/* 41–57 */
+{ name:"Steel Grey", image:"images/stellgrey.granite.jpg.jpg", origin:"India", appearance:"Fine grey grains", finishes:"Polished", thickness:"18mm", properties:"Modern look, very durable" },
+{ name:"Silver Pearl", image:"images/silverpearl.granite.jpg.jpg", origin:"India", appearance:"Silver reflective crystals", finishes:"Polished", thickness:"18mm", properties:"Reflective surface, strong stone" },
+{ name:"Moon White", image:"images/moonwhite.granite.jpg.jpg", origin:"India", appearance:"White with soft veins", finishes:"Polished", thickness:"18mm", properties:"Elegant, suitable for kitchens" },
+{ name:"Alaska White", image:"images/alaskawhitegranite.jpg.jpg", origin:"India", appearance:"White with grey veins", finishes:"Polished", thickness:"18mm", properties:"Popular modern granite" },
+{ name:"River White", image:"images/riverwhite.granite.jpg.jpg", origin:"India", appearance:"Flowing grey veins", finishes:"Polished", thickness:"18mm", properties:"Decorative & durable" },
+{ name:"Colonial White", image:"images/colonial.granite.jpg.jpg", origin:"India", appearance:"White with black specks", finishes:"Polished", thickness:"18mm", properties:"Timeless granite choice" },
+{ name:"Kashmir White", image:"images/kashmir.granite.jpg.jpg", origin:"India", appearance:"Grey waves on white", finishes:"Polished", thickness:"18mm", properties:"Elegant interior granite" },
+{ name:"Vizag Blue", image:"images/vizagblue.granite.jpg.jpg", origin:"India", appearance:"Blue-grey crystal texture", finishes:"Polished", thickness:"18mm", properties:"Distinctive color granite" },
+{ name:"Lavender Blue", image:"images/lavender.granite.jpg.jpg", origin:"India", appearance:"Lavender blue hue", finishes:"Polished", thickness:"18mm", properties:"Contemporary decorative granite" },
+{ name:"Blue Persa", image:"images/granite.bluepersa.jpeg", origin:"Norway", appearance:"Blue shimmering crystals", finishes:"Polished", thickness:"18mm", properties:"Luxury granite, reflective" },
+{ name:"Lakha Red", image:"images/lakhared.granite.jpg.jpg", origin:"India", appearance:"Deep red grain", finishes:"Polished", thickness:"18mm", properties:"Bold color, durable" },
+{ name:"Imperial Red", image:"images/imperialred.granite.jpg.jpg", origin:"India", appearance:"Rich red texture", finishes:"Polished", thickness:"18mm", properties:"Statement granite" },
+{ name:"Jhansi Red", image:"images/jhasired.granite.jpg.jpg", origin:"India", appearance:"Red speckled pattern", finishes:"Polished", thickness:"18mm", properties:"Strong granite, popular use" },
+{ name:"Kuppam Green", image:"images/granite.ivory white.jpeg", origin:"India", appearance:"Green mineral grains", finishes:"Polished", thickness:"18mm", properties:"Unique green granite" },
+{ name:"Hassan Green", image:"images/hassang.granite.jpg.jpg", origin:"India", appearance:"Dark green texture", finishes:"Polished", thickness:"18mm", properties:"Rich tone, decorative stone" },
+{ name:"Rosy Pink", image:"images/rosypink.granite.jpg.jpg", origin:"India", appearance:"Soft rosy pink", finishes:"Polished", thickness:"18mm", properties:"Soft color, interior use" },
+{ name:"Chima Pink", image:"images/chimapink.granite.jpg.jpg", origin:"India", appearance:"Bright pink grains", finishes:"Polished", thickness:"18mm", properties:"Decorative pink granite" },
+
+];
+
+
+const grid = document.getElementById('grid');
+const modal = document.getElementById('modal');
+
+function render(){
+  graniteData.forEach(g=>{
+    const c=document.createElement('div');
+    c.className='card';
+    c.innerHTML=`<img class="thumb" src="${g.image}" onerror="this.style.opacity=.15"><div class="card-body">${g.name}</div>`;
+    c.onclick=()=>openModal(g);
+    grid.appendChild(c);
+  });
+}
+
+function openModal(g){
+  modal.classList.add('show');
+  modalImg.src=g.image;
+  modalTitle.textContent=g.name;
+  specOrigin.textContent=g.origin;
+  specAppearance.textContent=g.appearance;
+  specFinishes.textContent=g.finishes;
+  specThickness.textContent=g.thickness;
+  specProperties.textContent=g.properties;
+}
+
+closeModal.onclick=()=>modal.classList.remove('show');
+modal.onclick=e=>{if(e.target===modal)modal.classList.remove('show')}
+
+render();
+</script>
+</body>
+</html>

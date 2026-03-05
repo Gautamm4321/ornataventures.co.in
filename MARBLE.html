@@ -1,0 +1,258 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Marble Collection — Oranta Ventures</title>
+
+<style>
+:root {
+    --bg:#ffffff;
+    --muted:#666;
+    --card-shadow:0 6px 18px rgba(10,10,10,.06);
+    --max-width:1100px;
+}
+*{box-sizing:border-box}
+
+body{
+    margin:0;
+    padding:30px;
+    font-family:Inter,system-ui,Arial,sans-serif;
+    background:var(--bg);
+    color:#222;
+    display:flex;
+    justify-content:center;
+}
+
+.container{width:100%;max-width:var(--max-width)}
+
+header{
+    background:#111;
+    color:#fff;
+    padding:6px;
+    border-radius:10px;
+    text-align:center;
+    margin-bottom:24px;
+}
+
+header h1{margin:0;font-size:22px}
+
+.grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fill,minmax(220px,1fr));
+    gap:18px;
+}
+
+.card{
+    background:#fff;
+    border-radius:10px;
+    overflow:hidden;
+    cursor:pointer;
+    box-shadow:var(--card-shadow);
+    transition:.25s;
+}
+
+.card:hover{transform:translateY(-3px)}
+
+.thumb{
+    width:100%;
+    aspect-ratio:3/4; /* thin / tall look for marble */
+    object-fit:cover;
+}
+
+.card-body{
+    padding:12px;
+    text-align:center;
+}
+
+.product-name{
+    font-weight:600;
+    font-size:15.5px;
+}
+
+/* Modal */
+.modal{
+    position:fixed;
+    inset:0;
+    display:none;
+    justify-content:center;
+    align-items:center;
+    background:rgba(0,0,0,.5);
+    z-index:999;
+    padding:20px;
+}
+.modal.show{display:flex}
+
+.modal-card{
+    background:#fff;
+    border-radius:12px;
+    max-width:900px;
+    width:100%;
+    display:grid;
+    grid-template-columns:1fr 380px;
+    overflow:hidden;
+}
+
+.modal-image{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+}
+
+.modal-details{
+    padding:18px;
+    overflow:auto;
+}
+
+.modal-details h2{margin-top:0}
+
+.specs{
+    font-size:15px;
+    color:var(--muted);
+    margin-bottom:8px;
+}
+
+.spec-title{
+    font-weight:700;
+    color:#222;
+}
+
+.close-btn{
+    background:#111;
+    color:#fff;
+    border:none;
+    padding:8px 12px;
+    border-radius:8px;
+    cursor:pointer;
+    margin-top:10px;
+}
+
+@media(max-width:850px){
+    .modal-card{grid-template-columns:1fr}
+    .modal-image{max-height:40vh}
+}
+
+footer{
+    text-align:center;
+    margin-top:18px;
+    color:var(--muted);
+    font-size:14px;
+}
+</style>
+</head>
+
+<body>
+<div class="container">
+
+<header>
+    <h1>Marble Collection</h1>
+</header>
+
+<div id="grid" class="grid"></div>
+
+<footer>© 2025 Oranta Ventures Pvt Ltd • All Rights Reserved</footer>
+
+</div>
+
+<!-- Modal -->
+<div id="modal" class="modal">
+    <div class="modal-card">
+        <img id="modalImg" class="modal-image">
+        <div class="modal-details">
+            <h2 id="modalTitle"></h2>
+            <p class="specs"><span class="spec-title">Origin:</span> <span id="origin"></span></p>
+            <p class="specs"><span class="spec-title">Appearance:</span> <span id="appearance"></span></p>
+            <p class="specs"><span class="spec-title">Finishes:</span> <span id="finishes"></span></p>
+            <p class="specs"><span class="spec-title">Thickness:</span> <span id="thickness"></span></p>
+            <p class="specs"><span class="spec-title">Properties:</span> <span id="properties"></span></p>
+            <button class="close-btn" onclick="closeModal()">Close</button>
+        </div>
+    </div>
+</div>
+
+<script>
+const marbleData = [
+
+{ name:"Amazonite", image:"images/MARBLE.AMAZONITE.jpeg", origin:"Brazil", appearance:"Blue-green crystal waves", finishes:"Polished, Honed", thickness:"18mm", properties:"Exotic, decorative marble" },
+{ name:"Arabescato", image:"images/MARBLE.ARABESCATO.jpeg", origin:"Italy", appearance:"White with dramatic grey veining", finishes:"Polished, Honed", thickness:"18mm", properties:"Luxury Italian marble" },
+{ name:"Armani Grey", image:"images/marble.armani grey.jpeg", origin:"Spain", appearance:"Dark grey fine veins", finishes:"Polished", thickness:"18mm", properties:"Modern premium marble" },
+{ name:"Babar Pink", image:"images/marble.babar pink.jpeg", origin:"India", appearance:"Soft pink patterns", finishes:"Polished", thickness:"18mm", properties:"Decorative Indian marble" },
+{ name:"Bianco Lasa", image:"images/marble.binoca lasa.jpeg", origin:"Italy", appearance:"Pure white with light veins", finishes:"Polished", thickness:"18mm", properties:"High-end architectural marble" },
+{ name:"Blue Bahia", image:"images/MARBLE.BLUEBAHIA.jpeg", origin:"Brazil", appearance:"Deep blue crystalline texture", finishes:"Polished", thickness:"18mm", properties:"Rare luxury marble" },
+{ name:"Botticino", image:"images/MARBLE.BOTTICINOMARBLE.jpeg", origin:"Italy", appearance:"Cream beige uniform texture", finishes:"Polished, Honed", thickness:"18mm", properties:"Classic Italian marble" },
+{ name:"Breccia Aurora", image:"images/MARBLE.BRECCIAAURORA.jpeg", origin:"Italy", appearance:"Pink-beige brecciated pattern", finishes:"Polished", thickness:"18mm", properties:"Elegant decorative stone" },
+{ name:"Breccia Soinicita", image:"images/MARBLE.BRECCIASOINICITA.jpeg", origin:"Italy", appearance:"Warm brecciated tones", finishes:"Polished", thickness:"18mm", properties:"Premium breccia marble" },
+{ name:"Calacatta Gold", image:"images/MARBLE.CALCATTAGOLD.jpeg", origin:"Italy", appearance:"White with gold-grey veins", finishes:"Polished", thickness:"18mm", properties:"Ultra luxury marble" },
+{ name:"Carrara White", image:"images/MARBLE.CARRARAWHITE.jpeg", origin:"Italy", appearance:"Soft grey veins on white", finishes:"Polished, Honed", thickness:"18mm", properties:"Timeless Italian marble" },
+{ name:"Crema Marfil", image:"images/MARBLE.CREMAMARFIL.jpeg", origin:"Spain", appearance:"Warm creamy beige", finishes:"Polished", thickness:"18mm", properties:"Popular interior marble" },
+{ name:"Emperador Dark", image:"images/MARBLE.EMPERDORDARK.jpeg", origin:"Spain", appearance:"Dark brown with veins", finishes:"Polished", thickness:"18mm", properties:"Rich premium marble" },
+{ name:"Emperador Gold", image:"images/MARBLE.EMPERDORGOLD.jpeg", origin:"Spain", appearance:"Golden brown veining", finishes:"Polished", thickness:"18mm", properties:"Elegant marble surface" },
+{ name:"Empress Green", image:"images/MARBLE.EMPRESSGREEN.jpeg", origin:"China", appearance:"Deep green crystal veins", finishes:"Polished", thickness:"18mm", properties:"Bold decorative marble" },
+{ name:"Equator", image:"images/marble.equatorr.jpeg", origin:"Brazil", appearance:"Linear grey banding", finishes:"Polished", thickness:"18mm", properties:"Modern linear marble" },
+{ name:"Fantasy Brown", image:"images/MARBLE.FANTASYBROWN.jpeg", origin:"India", appearance:"Flowing brown-grey waves", finishes:"Polished", thickness:"18mm", properties:"Popular designer marble" },
+{ name:"Fire Red", image:"images/MARBLE.FIRERED.jpeg", origin:"India", appearance:"Intense red crystalline grain", finishes:"Polished", thickness:"18mm", properties:"Strong color statement" },
+{ name:"Giallo Siena", image:"images/marble.giallosiena.jpeg", origin:"Italy", appearance:"Golden yellow marble", finishes:"Polished", thickness:"18mm", properties:"Historic Italian marble" },
+{ name:"Golden Black Portoro", image:"images/MARBLE.GOLDENBLACKPORTORO.jpeg", origin:"Italy", appearance:"Black with gold veins", finishes:"Polished", thickness:"18mm", properties:"Exclusive luxury marble" },
+{ name:"Grey Sonata", image:"images/marble.greysonata.jpeg", origin:"India", appearance:"Soft grey uniform texture", finishes:"Polished", thickness:"18mm", properties:"Minimal modern marble" },
+{ name:"Grey William", image:"images/marble.greywilliam.jpeg", origin:"UK", appearance:"Classic grey tone", finishes:"Polished", thickness:"18mm", properties:"Elegant neutral marble" },
+{ name:"Grigio Carnico", image:"images/marble.grigiocarnico.jpeg", origin:"Italy", appearance:"Dark grey with white veins", finishes:"Polished", thickness:"18mm", properties:"Bold Italian marble" },
+{ name:"Lilac", image:"images/MARBLE.LILAC.jpeg", origin:"Turkey", appearance:"White with purple veins", finishes:"Polished", thickness:"18mm", properties:"Distinctive luxury marble" },
+{ name:"Marinace Green", image:"images/MARBLE.MARINACEGREEN.jpeg", origin:"Brazil", appearance:"Green pebble stones", finishes:"Polished", thickness:"18mm", properties:"Statement decorative marble" },
+{ name:"Marinace Nero", image:"images/MARBLE.MARINACENERO.jpeg", origin:"Brazil", appearance:"Black pebble texture", finishes:"Polished", thickness:"18mm", properties:"Bold designer marble" },
+{ name:"Morwad White", image:"images/MARBLE.MORWADWHITE.jpeg", origin:"India", appearance:"White crystalline grain", finishes:"Polished", thickness:"18mm", properties:"Durable Indian marble" },
+{ name:"Nero Marquina", image:"images/marble.nero marquina.jpeg", origin:"Spain", appearance:"Black with white veins", finishes:"Polished", thickness:"18mm", properties:"High-contrast luxury marble" },
+{ name:"Ocean Grey", image:"images/marble.ocean grey.jpeg", origin:"India", appearance:"Grey flowing patterns", finishes:"Polished", thickness:"18mm", properties:"Modern interior marble" },
+{ name:"Panda White", image:"images/MARBLE.PANDAWHITE.jpeg", origin:"China", appearance:"Bold black veins on white", finishes:"Polished", thickness:"18mm", properties:"Designer statement marble" },
+{ name:"Peacock Green", image:"images/MARBLE.PEACOCKGREEN.jpeg", origin:"India", appearance:"Green with golden veins", finishes:"Polished", thickness:"18mm", properties:"Vibrant decorative marble" },
+{ name:"Rainforest Brown", image:"images/MARBLE.RAINFORESTBROWN.jpeg", origin:"India", appearance:"Tree-like brown veins", finishes:"Polished", thickness:"18mm", properties:"Nature-inspired marble" },
+{ name:"Volakas", image:"images/MARBLE.VOLKAS.jpeg", origin:"Greece", appearance:"White with soft grey veins", finishes:"Polished", thickness:"18mm", properties:"Elegant European marble" },
+{ name:"Verde Guatemala", image:"images/MARBLE.VERBE GUATEMALA.jpeg", origin:"India", appearance:"Dark green dramatic veins", finishes:"Polished", thickness:"18mm", properties:"Classic green marble" },
+{ name:"Toronto Brown", image:"images/MARBLE.TORONTOBROWN.jpeg", origin:"Canada", appearance:"Brown flowing texture", finishes:"Polished", thickness:"18mm", properties:"Warm tone marble" },
+{ name:"Tobacco Brown", image:"images/MARBLE.TOBACCOBROWN.jpeg", origin:"India", appearance:"Deep brown veins", finishes:"Polished", thickness:"18mm", properties:"Rich interior marble" },
+{ name:"Statuario", image:"images/MARBLE.STATUARIO.jpeg", origin:"Italy", appearance:"Bold grey veins on white", finishes:"Polished", thickness:"18mm", properties:"Top-tier Italian marble" },
+{ name:"Saint Laurent", image:"images/MARBLE.ST LAURENT.jpeg", origin:"France", appearance:"Black with gold veins", finishes:"Polished", thickness:"18mm", properties:"Luxury designer marble" },
+{ name:"Spider Green", image:"images/MARBLE.SPIDERGREEN.jpeg", origin:"India", appearance:"Green with spider-web veins", finishes:"Polished", thickness:"18mm", properties:"Unique pattern marble" },
+{ name:"Silver Brown", image:"images/marble.silver brown.jpeg", origin:"India", appearance:"Brown-grey flowing veins", finishes:"Polished", thickness:"18mm", properties:"Elegant marble surface" },
+{ name:"Sarrancolin", image:"images/MARBLE.SARRANCOLIN.jpeg", origin:"France", appearance:"Multicolor brecciated veins", finishes:"Polished", thickness:"18mm", properties:"Architectural marble" },
+{ name:"Rosso Levanto", image:"images/MARBLE.ROSSOLAVANTE.jpeg", origin:"Italy", appearance:"Dark red with white veins", finishes:"Polished", thickness:"18mm", properties:"Historic Italian marble" },
+{ name:"Roma Imperial", image:"images/MARBLE.ROMAIMPERIAL.jpeg", origin:"Turkey", appearance:"Warm beige linear veins", finishes:"Polished", thickness:"18mm", properties:"Elegant modern marble" },
+{ name:"Rainforest Green", image:"images/MARBLE.RAINFORESTGREEN.jpeg", origin:"India", appearance:"Green tree-like patterns", finishes:"Polished", thickness:"18mm", properties:"Nature-inspired marble" },
+{ name:"Verde Alpi", image:"images/MARBLEVERBE ALPI.jpeg", origin:"Italy", appearance:"Dark green with white veins", finishes:"Polished", thickness:"18mm", properties:"Classic alpine marble" }
+];  
+
+const grid=document.getElementById("grid");
+const modal=document.getElementById("modal");
+
+marbleData.forEach((item,i)=>{
+    const card=document.createElement("div");
+    card.className="card";
+    card.innerHTML=`
+        <img class="thumb" src="${item.image}" alt="${item.name}">
+        <div class="card-body">
+            <div class="product-name">${item.name}</div>
+        </div>`;
+    card.onclick=()=>openModal(i);
+    grid.appendChild(card);
+});
+
+function openModal(i){
+    const d=marbleData[i];
+    document.getElementById("modalImg").src=d.image;
+    document.getElementById("modalTitle").innerText=d.name;
+    document.getElementById("origin").innerText=d.origin;
+    document.getElementById("appearance").innerText=d.appearance;
+    document.getElementById("finishes").innerText=d.finishes;
+    document.getElementById("thickness").innerText=d.thickness;
+    document.getElementById("properties").innerText=d.properties;
+    modal.classList.add("show");
+}
+
+function closeModal(){
+    modal.classList.remove("show");
+}
+
+modal.onclick=e=>{ if(e.target===modal) closeModal(); }
+</script>
+
+</body>
+</html>

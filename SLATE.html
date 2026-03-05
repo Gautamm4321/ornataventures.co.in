@@ -1,0 +1,298 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Slate Stone Varieties — Oranta Ventures</title>
+
+    <style>
+        :root {
+            --bg: #fff;
+            --muted: #666;
+            --card-shadow: 0 6px 18px rgba(0, 0, 0, .06);
+            --max-width: 1100px;
+        }
+
+        * {
+            box-sizing: border-box
+        }
+
+        body {
+            margin: 0;
+            padding: 30px;
+            background: var(--bg);
+            font-family: Inter, Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            color: #222;
+        }
+
+        .container {
+            max-width: var(--max-width);
+            width: 100%
+        }
+
+        header {
+            background: #111;
+            color: #fff;
+            padding: 0.1px;
+            border-radius: 10px;
+            text-align: center;
+            margin-bottom: 24px;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 18px;
+        }
+
+        .card {
+            background: #fff;
+            border-radius: 10px;
+            overflow: hidden;
+            cursor: pointer;
+            box-shadow: var(--card-shadow);
+            transition: .25s;
+        }
+
+        .thumb {
+            width: 100%;
+            aspect-ratio: 1/1;
+            object-fit: cover;
+            transition: .3s;
+        }
+
+        .card:hover .thumb {
+            transform: scale(1.05)
+        }
+
+        .card-body {
+            text-align: center;
+            padding: 12px
+        }
+
+        .product-name {
+            font-weight: 600;
+            font-size: 15.5px
+        }
+
+        .pagination {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin: 20px 0;
+        }
+
+        .pg-btn {
+            background: #111;
+            color: #fff;
+            border: none;
+            padding: 8px 14px;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        .pg-btn[disabled] {
+            opacity: .4
+        }
+
+        .modal {
+            position: fixed;
+            inset: 0;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            background: rgba(0, 0, 0, .5);
+            padding: 20px;
+        }
+
+        .modal.show {
+            display: flex
+        }
+
+        .modal-card {
+            background: #fff;
+            max-width: 900px;
+            width: 100%;
+            border-radius: 12px;
+            overflow: hidden;
+            display: grid;
+            grid-template-columns: 1fr 380px;
+        }
+
+        .modal-image {
+            width: 100%;
+            object-fit: cover
+        }
+
+        .modal-details {
+            padding: 18px;
+            overflow: auto
+        }
+
+        .specs {
+            color: var(--muted);
+            margin-bottom: 8px
+        }
+
+        .spec-title {
+            font-weight: 700;
+            color: #222
+        }
+
+        .close-btn {
+            background: #111;
+            color: #fff;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        footer {
+            text-align: center;
+            color: var(--muted);
+            font-size: 14px
+        }
+
+        @media(max-width:880px) {
+            .modal-card {
+                grid-template-columns: 1fr
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+        <header>
+            <h2>Slate Varieties</h2>
+        </header>
+
+        <div id="grid" class="grid"></div>
+
+        <div class="pagination">
+            <button class="pg-btn" id="prevBtn">Previous</button>
+            <button class="pg-btn" id="nextBtn">Next</button>
+        </div>
+
+        <footer>© 2025 Oranta Ventures Pvt Ltd • All Rights Reserved</footer>
+    </div>
+
+    <!-- MODAL -->
+    <div id="modal" class="modal">
+        <div class="modal-card">
+            <img id="modalImg" class="modal-image">
+            <div class="modal-details">
+                <h2 id="modalTitle"></h2>
+                <p class="specs"><span class="spec-title">Origin:</span> <span id="specOrigin"></span></p>
+                <p class="specs"><span class="spec-title">Appearance:</span> <span id="specAppearance"></span></p>
+                <p class="specs"><span class="spec-title">Finishes:</span> <span id="specFinishes"></span></p>
+                <p class="specs"><span class="spec-title">Thickness:</span> <span id="specThickness"></span></p>
+                <p class="specs"><span class="spec-title">Properties:</span> <span id="specProperties"></span></p>
+                <button class="close-btn" id="closeModal">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const slateData = [
+            {
+                name: "Multicolor Slate",
+                image: "images/slate.multicolor.jpeg",
+                origin: "Rajasthan, India",
+                appearance: "Natural mix of earthy colors",
+                finishes: "Natural, Honed",
+                thickness: "10–15mm",
+                properties: "Highly durable & weather resistant"
+            },
+            {
+                name: "Jack Black",
+                image: "images/slate. jack black.jpeg",
+                origin: "India",
+                appearance: "Deep black textured surface",
+                finishes: "Natural, Honed",
+                thickness: "10–15mm",
+                properties: "Slip resistant & modern look"
+            },
+            {
+                name: "Rustic Copper",
+                image: "images/SLATE.RUSTICCOPPER.jpeg",
+                origin: "India",
+                appearance: "Copper & rust shades",
+                finishes: "Natural",
+                thickness: "10–15mm",
+                properties: "Ideal for outdoor walls"
+            },
+            {
+                name: "Ocean Green",
+                image: "images/slate.ocean green.jpeg",
+                origin: "India",
+                appearance: "Green tones with wave texture",
+                finishes: "Natural",
+                thickness: "10–15mm",
+                properties: "Strong & moisture resistant"
+            },
+            {
+                name: "Deoli Green",
+                image: "images/slate.deoli green.jpeg",
+                origin: "Rajasthan, India",
+                appearance: "Soft green natural layers",
+                finishes: "Natural",
+                thickness: "10–15mm",
+                properties: "Popular for flooring & cladding"
+            },
+            {
+                name: "Silver Shine",
+                image: "images/SLATE.SILVERSHINE.jpeg",
+                origin: "India",
+                appearance: "Silver shimmer surface",
+                finishes: "Natural, Polished",
+                thickness: "10–15mm",
+                properties: "Premium decorative slate"
+            },
+        ];
+
+        const perPage = 6;
+        let page = 1;
+        const grid = document.getElementById("grid");
+
+        function render() {
+            grid.innerHTML = "";
+            const start = (page - 1) * perPage;
+            slateData.slice(start, start + perPage).forEach((s, i) => {
+                const c = document.createElement("div");
+                c.className = "card";
+                c.innerHTML = `<img class="thumb" src="${s.image}">
+<div class="card-body"><div class="product-name">${s.name}</div></div>`;
+                c.onclick = () => openModal(start + i);
+                grid.appendChild(c);
+            });
+            prevBtn.disabled = page === 1;
+            nextBtn.disabled = start + perPage >= slateData.length;
+        }
+
+        function openModal(i) {
+            const s = slateData[i];
+            modal.classList.add("show");
+            modalImg.src = s.image;
+            modalTitle.textContent = s.name;
+            specOrigin.textContent = s.origin;
+            specAppearance.textContent = s.appearance;
+            specFinishes.textContent = s.finishes;
+            specThickness.textContent = s.thickness;
+            specProperties.textContent = s.properties;
+        }
+
+        closeModal.onclick = () => modal.classList.remove("show");
+        prevBtn.onclick = () => { if (page > 1) { page--; render(); } };
+        nextBtn.onclick = () => { if (page * perPage < slateData.length) { page++; render(); } };
+        render();
+    </script>
+
+</body>
+
+</html>

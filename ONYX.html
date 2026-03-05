@@ -1,0 +1,272 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Onyx Varieties — Oranta Ventures</title>
+
+    <style>
+        :root {
+            --bg: #ffffff;
+            --muted: #666;
+            --card-shadow: 0 6px 18px rgba(0, 0, 0, .08);
+            --max-width: 1100px;
+        }
+
+        * {
+            box-sizing: border-box
+        }
+
+        body {
+            margin: 0;
+            padding: 30px;
+            font-family: Inter, system-ui, Arial, sans-serif;
+            background: var(--bg);
+            display: flex;
+            justify-content: center;
+        }
+
+        .container {
+            width: 100%;
+            max-width: var(--max-width);
+        }
+
+        header {
+            background: #111;
+            color: #fff;
+            padding: 2px;
+            border-radius: 6px;
+            text-align: center;
+            margin-bottom: 22px;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 18px;
+        }
+
+        .card {
+            background: #fff;
+            border-radius: 10px;
+            overflow: hidden;
+            cursor: pointer;
+            box-shadow: var(--card-shadow);
+            transition: .25s;
+        }
+
+        .card:hover {
+            transform: translateY(-4px)
+        }
+
+        .thumb {
+            width: 100%;
+            aspect-ratio: 1/1;
+            object-fit: cover;
+        }
+
+        .card-body {
+            padding: 12px;
+            text-align: center;
+            font-weight: 600;
+        }
+
+        .modal {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, .55);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 999;
+            padding: 20px;
+        }
+
+        .modal.show {
+            display: flex
+        }
+
+        .modal-card {
+            background: #fff;
+            max-width: 900px;
+            width: 100%;
+            border-radius: 12px;
+            overflow: hidden;
+            display: grid;
+            grid-template-columns: 1fr 360px;
+        }
+
+        .modal-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .modal-details {
+            padding: 18px;
+        }
+
+        .modal-details h2 {
+            margin-top: 0
+        }
+
+        .spec {
+            font-size: 15px;
+            margin-bottom: 6px;
+        }
+
+        .spec span {
+            font-weight: 600;
+        }
+
+        .close-btn {
+            margin-top: 12px;
+            background: #111;
+            color: #fff;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        @media(max-width:850px) {
+            .modal-card {
+                grid-template-columns: 1fr
+            }
+
+            .modal-image {
+                max-height: 40vh
+            }
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 20px;
+            color: var(--muted);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+
+        <header>
+            <h2>Onyx Varieties</h2>
+        </header>
+
+        <div id="grid" class="grid"></div>
+
+        <footer>© 2025 Oranta Ventures Pvt Ltd</footer>
+
+    </div>
+
+    <!-- MODAL -->
+    <div id="modal" class="modal">
+        <div class="modal-card">
+            <img id="modalImg" class="modal-image">
+            <div class="modal-details">
+                <h2 id="title"></h2>
+                <div class="spec"><span>Origin:</span> <span id="origin"></span></div>
+                <div class="spec"><span>Appearance:</span> <span id="appearance"></span></div>
+                <div class="spec"><span>Finishes:</span> <span id="finishes"></span></div>
+                <div class="spec"><span>Thickness:</span> <span id="thickness"></span></div>
+                <div class="spec"><span>Properties:</span> <span id="properties"></span></div>
+                <button class="close-btn" onclick="closeModal()">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const onyxData = [
+            {
+                name: "Green Onyx",
+                image: "images/onyx.green.jpeg",
+                origin: "Pakistan, Iran",
+                appearance: "Translucent green with flowing veins",
+                finishes: "Polished",
+                thickness: "15mm, 18mm",
+                properties: "Luxurious, backlight-friendly"
+            },
+            {
+                name: "Pink Onyx",
+                image: "images/onyx.pink.jpeg",
+                origin: "Iran",
+                appearance: "Soft pink waves with white patterns",
+                finishes: "Polished",
+                thickness: "15mm, 18mm",
+                properties: "Decorative, elegant look"
+            },
+            {
+                name: "Honey Onyx",
+                image: "images/onyx.honey.jpeg",
+                origin: "Mexico",
+                appearance: "Golden honey tones with crystal veins",
+                finishes: "Polished",
+                thickness: "15mm, 18mm",
+                properties: "Warm glow, premium interiors"
+            },
+            {
+                name: "White Onyx",
+                image: "images/onyx.white.jpeg",
+                origin: "Pakistan",
+                appearance: "Milky white translucent surface",
+                finishes: "Polished",
+                thickness: "15mm, 18mm",
+                properties: "Bright, luxury applications"
+            },
+            {
+                name: "Blue Onyx",
+                image: "images/onyx.blue.jpeg",
+                origin: "Iran",
+                appearance: "Light blue shades with flowing layers",
+                finishes: "Polished",
+                thickness: "15mm",
+                properties: "Rare, decorative stone"
+            },
+            {
+                name: "Multi Onyx",
+                image: "images/onyx.multicolor.jpeg",
+                origin: "Mexico",
+                appearance: "Mixed colors with dramatic veins",
+                finishes: "Polished",
+                thickness: "15mm, 18mm",
+                properties: "Statement stone, artistic"
+            }
+        ];
+
+        const grid = document.getElementById("grid");
+        const modal = document.getElementById("modal");
+
+        onyxData.forEach((o, i) => {
+            const card = document.createElement("div");
+            card.className = "card";
+            card.innerHTML = `
+    <img src="${o.image}" class="thumb">
+    <div class="card-body">${o.name}</div>`;
+            card.onclick = () => openModal(i);
+            grid.appendChild(card);
+        });
+
+        function openModal(i) {
+            const o = onyxData[i];
+            modal.classList.add("show");
+            document.getElementById("modalImg").src = o.image;
+            document.getElementById("title").innerText = o.name;
+            document.getElementById("origin").innerText = o.origin;
+            document.getElementById("appearance").innerText = o.appearance;
+            document.getElementById("finishes").innerText = o.finishes;
+            document.getElementById("thickness").innerText = o.thickness;
+            document.getElementById("properties").innerText = o.properties;
+        }
+
+        function closeModal() {
+            modal.classList.remove("show");
+        }
+
+        modal.onclick = e => { if (e.target === modal) closeModal(); }
+    </script>
+
+</body>
+
+</html>
