@@ -265,7 +265,7 @@ landscapeData.forEach((item, i) => {
     const card = document.createElement("div");
     card.className = "card";
     card.innerHTML = `
-        <img class="thumb" src="${item.image}" alt="${item.name}">
+        <img class="thumb" src="${item.image}" alt="${item.name}" loading="lazy">
         <div class="card-body">
             <div class="product-name">${item.name}</div>
         </div>`;
@@ -294,3 +294,4 @@ modal.onclick = e => { if (e.target === modal) closeModal(); }
 
 </body>
 </html>
+
