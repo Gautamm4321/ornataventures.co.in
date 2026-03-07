@@ -319,7 +319,7 @@
                 const card = document.createElement("div");
                 card.className = "card";
                 card.innerHTML = `
-      <img src="${item.image}" class="thumb">
+      <img src="${item.image}" class="thumb" loading="lazy">
       <div class="card-body"><div class="product-name">${item.name}</div></div>`;
                 card.onclick = () => openModal(i);
                 grid.appendChild(card);
@@ -345,5 +345,6 @@
     </script>
 
 </body>
+
 
 </html>
