@@ -296,7 +296,7 @@
                 const card = document.createElement("div");
                 card.className = "card";
                 card.innerHTML = `
-            <img class="thumb" src="${item.image}">
+            <img class="thumb" src="${item.image}" loading="lazy">
             <div class="card-body"><div class="product-name">${item.name}</div></div>
         `;
                 card.onclick = () => openModal(start + i);
@@ -332,5 +332,6 @@
     </script>
 
 </body>
+
 
 </html>
