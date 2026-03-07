@@ -266,8 +266,8 @@
             slateData.slice(start, start + perPage).forEach((s, i) => {
                 const c = document.createElement("div");
                 c.className = "card";
-                c.innerHTML = `<img class="thumb" src="${s.image}">
-<div class="card-body"><div class="product-name">${s.name}</div></div>`;
+                c.innerHTML = `<img class="thumb" src="${s.image}" loading="lazy">
+         <div class="card-body"><div class="product-name">${s.name}</div></div>`;
                 c.onclick = () => openModal(start + i);
                 grid.appendChild(c);
             });
@@ -297,3 +297,4 @@
 
 
 </html>
+
