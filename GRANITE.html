@@ -150,7 +150,7 @@ function render(){
   graniteData.forEach(g=>{
     const c=document.createElement('div');
     c.className='card';
-    c.innerHTML=`<img class="thumb" src="${g.image}" onerror="this.style.opacity=.15"><div class="card-body">${g.name}</div>`;
+    c.innerHTML=`<img class="thumb" src="${g.image}" loading="lazy" onerror="this.style.opacity=.15"><div class="card-body">${g.name}</div>`;
     c.onclick=()=>openModal(g);
     grid.appendChild(c);
   });
@@ -174,3 +174,4 @@ render();
 </script>
 </body>
 </html>
+
