@@ -10,4 +10,10 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
             behavior: "smooth"
         });
     });
+
+});
+
+
+document.querySelectorAll("video").forEach(video => {
+  video.play().catch(() => {});
 });
