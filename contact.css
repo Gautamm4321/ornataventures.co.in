@@ -20,6 +20,11 @@ body {
     z-index: -2;
 }
 
+video::-webkit-media-controls {
+  display: none !important;
+}
+
+
 /* Dark Overlay */
 .overlay {
     position: fixed;
@@ -129,4 +134,5 @@ body {
 .wa-icon {
     width: 22px;
     height: 22px;
+
 }
