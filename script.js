@@ -2,7 +2,6 @@ function openpage(page) {
     window.location.href = page;
 }
 
-
 document.querySelectorAll('a[href^="#"]').forEach(anchor => {
     anchor.addEventListener("click", function (e) {
         e.preventDefault();
@@ -10,10 +9,9 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
             behavior: "smooth"
         });
     });
-
 });
 
-
 document.querySelectorAll("video").forEach(video => {
-  video.play().catch(() => {});
+    video.muted = true;
+    video.play().catch(() => {});
 });
