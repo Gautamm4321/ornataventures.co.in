@@ -11,7 +11,7 @@
 <body>
 
     <!-- Background Video -->
-    <video autoplay muted loop playsinline preload="metadata" class="bg-video">
+    <video autoplay muted loop playsinline webkit-playsinline preload="metadata" class="bg-video">
         <source src="contact.video.mp4" type="video/mp4">
     </video>
 
@@ -57,14 +57,17 @@
     </div>
 
     <script>
-        document.querySelectorAll("video").forEach(video => {
-            video.muted = true;
-            video.play().catch(() => { });
-        });
+       document.querySelectorAll("video").forEach(video => {
+       video.muted = true;
+       video.setAttribute("playsinline", "");
+       video.setAttribute("webkit-playsinline", "");
+       video.play().catch(() => {});
+       });
     </script>
 
 
 </body>
 
 </html>
+
 
