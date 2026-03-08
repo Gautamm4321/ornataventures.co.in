@@ -11,7 +11,7 @@
 <body>
 
     <!-- Background Video -->
-    <video autoplay muted loop class="bg-video">
+    <video autoplay muted loop playsinline preload="none" class="bg-video">
         <source src="contact.video.mp4" type="video/mp4">
     </video>
 
@@ -55,6 +55,14 @@
         </div>
 
     </div>
+
+    <script>
+        document.querySelectorAll("video").forEach(video => {
+            video.muted = true;
+            video.play().catch(() => { });
+        });
+    </script>
+
 
 </body>
 
