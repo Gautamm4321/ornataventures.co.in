@@ -18,6 +18,7 @@ body {
     height: 100%;
     object-fit: cover;
     z-index: -2;
+    pointer-events: none;
 }
 
 video::-webkit-media-controls {
@@ -135,4 +136,9 @@ video::-webkit-media-controls {
     width: 22px;
     height: 22px;
 
+}
+
+video::-webkit-media-controls-start-playback-button {
+  display: none !important;
+  -webkit-appearance: none;
 }
