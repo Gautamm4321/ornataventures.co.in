@@ -11,7 +11,10 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
     });
 });
 
-document.querySelectorAll("video").forEach(video => {
-    video.muted = true;
-    video.play().catch(() => {});
-});
+ document.querySelectorAll("video").forEach(video => {
+video.muted = true;
+video.setAttribute("playsinline", "");
+video.setAttribute("webkit-playsinline", "");
+video.play().catch(() => {});
+});  
+
