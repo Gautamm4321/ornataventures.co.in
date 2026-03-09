@@ -11,10 +11,22 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
     });
 });
 
- document.querySelectorAll("video").forEach(video => {
-video.muted = true;
-video.setAttribute("playsinline", "");
-video.setAttribute("webkit-playsinline", "");
-video.play().catch(() => {});
-});  
+// iOS autoplay fix
+document.addEventListener("DOMContentLoaded", function () {
+    const videos = document.querySelectorAll("video");
 
+    videos.forEach(function (video) {
+        video.muted = true;
+        video.setAttribute("playsinline", "");
+        video.setAttribute("webkit-playsinline", "");
+
+        const playPromise = video.play();
+        if (playPromise !== undefined) {
+            playPromise.catch(function () {
+                document.addEventListener("touchstart", function () {
+                    video.play();
+                }, { once: true });
+            });
+        }
+    });
+});
